@@ -3,7 +3,7 @@ import { UserType } from '../../stores/UserStore';
 
 defineProps<{
   user: UserType,
-  searchGame: () => Promise<void>
+  startGame: () => Promise<void>
 }>()
 </script>
 
@@ -14,7 +14,7 @@ defineProps<{
         {{ user }}
       </div>
       <button class="btn btn-primary"
-              @click="searchGame">
+              @click="startGame">
         対戦する
       </button>
     </div>

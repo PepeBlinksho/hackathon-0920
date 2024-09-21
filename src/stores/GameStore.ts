@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 
 export type GameType = {
   "channelName": string | null,
+  id: number | null,
+  opponentId: number | null,
 }
 
 export const useGameStore = defineStore('game', {
@@ -9,6 +11,8 @@ export const useGameStore = defineStore('game', {
     return {
       game: {
         "channelName": null,
+        id: null,
+        opponentId: null,
       } as GameType
     }
   },

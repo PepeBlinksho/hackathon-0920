@@ -28,12 +28,17 @@ const createGame = async () => {
   participateGame(gameStore.$state.game.channelName!)
 }
 
-const searchGame = async () => {
+const startGame = async () => {
   const game = await gameModule.query()
   if (!game) {
     await createGame()
   }
   else {
+    gameModule.setGameStore(
+      game.channel_name,
+      game.id
+    )
+
     participateGame(game.channel_name)
   }
 }
@@ -57,6 +62,6 @@ onBeforeMount(async () => {
   <div class="w-full h-screen">
     <UiProgress v-if="isShowProgress" />
     <UiMain v-else :user="userStore.$state.user"
-                   :searchGame />
+                   :startGame />
   </div>
 </template>

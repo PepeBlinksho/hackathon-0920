@@ -13,8 +13,15 @@ export function useGameModule() {
     },
     async createGame(userId: number) {
       const channelName = uuidv4()
-      gameStore.setGame({channelName})
-      await resource.create(channelName, userId)
+      const res = await resource.create(channelName, userId)
+      this.setGameStore(channelName, res.data.id)
+    },
+    setGameStore(channelName: string, id: number) {
+      gameStore.setGame({
+        channelName,
+        id,
+        opponentId: null
+      })
     }
   };
 }
