@@ -43,11 +43,12 @@ const isShowProgress = computed(() => {
 })
 
 onBeforeMount(async () => {
+  await userModule.query(userId.value)
+
   if (!ablyClientStore.client) {
-    ablyClientStore.createAblyClient()
+    await ablyClientStore.createAblyClient(userStore.user.id!)
   }
 
-  await userModule.query(userId.value)
   mounted.value = true
 })
 </script>
