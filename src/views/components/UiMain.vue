@@ -1,9 +1,15 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { UserType } from '../../stores/UserStore';
+
+defineProps<{
+  user: UserType
+}>()
+</script>
 
 <template>
   <div class="w-full h-full">
     <div class="flex">
-      test
+      {{ user }}
     </div>
   </div>
 </template>

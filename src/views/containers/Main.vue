@@ -1,16 +1,26 @@
 <script setup lang="ts">
+import { useUserModule } from '../../modules/useUserModule';
 import { useUserStore } from '../../stores/UserStore';
 import UiMain from '../components/UiMain.vue'
-import { onBeforeMount } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 
 const userStore = useUserStore()
+const userModule = useUserModule()
 
-onBeforeMount(() => {
+const mounted = ref(false)
+
+onBeforeMount(async () => {
   // TODO: APIで登録する
-  userStore.setUserId()
+  await userModule.query()
+  mounted.value = true
 })
 </script>
 
 <template>
-  <UiMain />
+  <div>
+    <UiMain v-if="mounted" :user="userStore.$state" />
+    <div v-else>
+      loading....
+    </div>
+  </div>
 </template>
