@@ -59,6 +59,12 @@ const subscribeCallback = (message: Ably.InboundMessage) => {
   console.log(message)
   if (message.name === 'RESULT') {
     gameState.result = message.data.result
+    return
+  }
+
+  if (message.name === 'GAME_START') {
+    gameState.isGameStart = true
+    return
   }
 
   // this.channel.publish("MESSAGE", "Here is my first message!")
@@ -75,7 +81,8 @@ const presenceCallback = async (member: Ably.PresenceMessage) => {
 
   // 相手がルームに入った場合: 試合開始
   if (member.action === 'enter' && member.clientId !== userStore.user.id?.toString()) {
-    gameState.isGameStart = true
+    ablyClientStore.$state.channel?.publish('GAME_START', {})
+
     await gameModule.start(gameStore.$state.game.id!, Number(member.clientId))
     return;
   }
