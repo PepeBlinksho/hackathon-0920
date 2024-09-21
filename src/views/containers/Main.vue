@@ -57,6 +57,11 @@ const drawGame = async () => {
 
 const subscribeCallback = (message: Ably.InboundMessage) => {
   console.log(message)
+  if (gameState.isGameFinish) {
+    console.log('ゲームは終了しています。')
+    return
+  }
+
   if (message.name === 'RESULT' && message.clientId !== userStore.user.id?.toString()) {
     gameState.result = message.data.result
     gameState.isGameFinish = true;
