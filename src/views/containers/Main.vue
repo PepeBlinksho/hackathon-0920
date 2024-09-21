@@ -18,7 +18,7 @@ onBeforeMount(async () => {
 
 <template>
   <div>
-    <UiMain v-if="mounted" :user="userStore.$state" />
+    <UiMain v-if="mounted" :user="userStore.$state.user" />
     <div v-else>
       loading....
     </div>
