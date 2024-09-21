@@ -6,17 +6,9 @@ export function useUserModule() {
   const resource = useUserResource()
 
   return {
-    async query() {
-      // resourceからAPIを叩く
-      const res = await resource.query()
-      console.log(res.data)
-      // return data;
-      userStore.setUser({
-        "id": 13,
-        "point": 0,
-        "created_at": "2024-09-21T03:41:02.913Z",
-        "updated_at": "2024-09-21T03:41:02.913Z"
-      })
+    async query(userId: number | null) {
+      const res = await resource.query(userId)
+      userStore.setUser(res.data.user)
     },
   };
 }
