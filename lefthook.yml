@@ -1,0 +1,25 @@
+# EXAMPLE USAGE:
+#
+#   Refer for explanation to following link:
+#   https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md
+#
+pre-push:
+  commands:
+    type-check:
+      tags: frontend type check
+      run: yarn build:with-tsc
+
+pre-commit:
+  parallel: true
+  commands:
+    eslint:
+      glob: '*.{vue,js,jsx,cjs,mjs,ts,tsx,cts,mts}'
+      run: |
+        npx eslint --fix {staged_files} --ignore-path .gitignore
+      stage_fixed: true
+      skip:
+        - merge
+        - rebase
+    type-check:
+      tags: frontend type check
+      run: npx vue-tsc -b
