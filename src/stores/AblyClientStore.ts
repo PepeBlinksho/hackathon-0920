@@ -34,7 +34,7 @@ export const useAblyClientStore = defineStore('ablyClient', {
       this.channel = this.client.channels.get(channelName)
       // ゲームのイベントロジック実装
       // userIdを送るようにする
-      this.channel.subscribe("MESSAGE",subscribeCallback);
+      this.channel.subscribe(subscribeCallback);
       this.channel.presence.subscribe(presenceCallback);
       this.channel.presence.enter()
     },
