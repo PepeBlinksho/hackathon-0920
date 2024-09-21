@@ -16,20 +16,18 @@ export function useGameResource() {
       });
     },
     async start(id: number, opponentId: number) {
-      const url = `https://nogame-f18ee607639d.herokuapp.com/api/games/${id}/update_playing`;
-      return axios.post(url, {
+      const url = `https://nogame-f18ee607639d.herokuapp.com/api/games/${id}/update_playing.json`;
+      return axios.put(url, {
         opponent_id: opponentId
       });
     },
     async draw(id: number) {
-      const url = `https://nogame-f18ee607639d.herokuapp.com/api/games/${id}/draw`;
-      return axios.post(url, {
-        id
-      });
+      const url = `https://nogame-f18ee607639d.herokuapp.com/api/games/${id}/update_draw`;
+      return axios.put(url);
     },
     async won(id: number, userId: number) {
-      const url = `https://nogame-f18ee607639d.herokuapp.com/api/games/${id}/won`;
-      return axios.post(url, {
+      const url = `https://nogame-f18ee607639d.herokuapp.com/api/games/${id}/update_finished`;
+      return axios.put(url, {
         "user_id": userId
       });
     },
