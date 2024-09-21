@@ -1,18 +1,19 @@
 <script setup lang="ts">
-import { useUserModule } from '../../../modules/useUserModule';
-import { useUserStore } from '../../../stores/UserStore';
-import UiProgress from '../../components/UiProgress.vue';
+import type { RemovableRef } from '@vueuse/core'
+import { useStorage } from '@vueuse/core'
+import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
+import { useUserModule } from '../../../modules/useUserModule'
+import { useAblyClientStore } from '../../../stores/AblyClientStore'
+import { useUserStore } from '../../../stores/UserStore'
 import UiMain from '../../components/UiMain.vue'
-import { computed, onBeforeMount, reactive, ref, watch } from 'vue';
-import { RemovableRef, useStorage } from '@vueuse/core';
-import { useAblyClientStore } from '../../../stores/AblyClientStore';
-import { _useGameFunc } from './_useGameFunc';
+import UiProgress from '../../components/UiProgress.vue'
+import { _useGameFunc } from './_useGameFunc'
 
-export type GameStateType = {
-  isGameStart: boolean,
-  isGameFinish: boolean,
-  isMatching: boolean,
-  result:  'won' | 'lose' | 'draw' | null
+export interface GameStateType {
+  isGameStart: boolean
+  isGameFinish: boolean
+  isMatching: boolean
+  result: 'won' | 'lose' | 'draw' | null
 }
 
 const userStore = useUserStore()
@@ -27,14 +28,16 @@ const gameState = reactive<GameStateType>({
   isGameStart: false,
   isGameFinish: false,
   isMatching: false,
-  result: null
+  result: null,
 })
 
 const isShowProgress = computed(() => {
-  return !mounted || gameState.isMatching;
+  return !mounted.value || gameState.isMatching
 })
 
-watch(() => { return gameState.isGameFinish }, (isGameFinish) => {
+watch(() => {
+  return gameState.isGameFinish
+}, (isGameFinish) => {
   if (isGameFinish) {
     ablyClientStore.leaveChannel()
   }
@@ -64,12 +67,18 @@ onBeforeMount(async () => {
     <!-- in gage -->
     <div v-else-if="gameState.isGameStart">
       ゲーム中
-      <button class="btn btn-info" @click="gameFunc.wonGame(gameState)">勝ち</button>
-      <button class="btn btn-success" @click="gameFunc.drawGame(gameState)">引き分けにする</button>
+      <button class="btn btn-info" @click="gameFunc.wonGame(gameState)">
+        勝ち
+      </button>
+      <button class="btn btn-success" @click="gameFunc.drawGame(gameState)">
+        引き分けにする
+      </button>
     </div>
     <div v-else>
-      <UiMain :user="userStore.$state.user"
-              :startGame="() => gameFunc.startGame(gameState)" />
+      <UiMain
+        :user="userStore.$state.user"
+        :start-game="() => gameFunc.startGame(gameState)"
+      />
     </div>
     <UiProgress v-if="isShowProgress" />
   </div>

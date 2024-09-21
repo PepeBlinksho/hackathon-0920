@@ -10,7 +10,9 @@ const count = ref(0)
 
 <template>
   <h1>{{ msg }}</h1>
-  <button class="btn">Button</button>
+  <button class="btn">
+    Button
+  </button>
   <div class="btn">
     <button
       type="button"

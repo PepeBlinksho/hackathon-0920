@@ -1,6 +1,6 @@
-import { useGameResource } from "../resources/useGameResource";
-import { useGameStore } from "../stores/GameStore";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
+import { useGameResource } from '../resources/useGameResource'
+import { useGameStore } from '../stores/GameStore'
 
 export function useGameModule() {
   const gameStore = useGameStore()
@@ -29,8 +29,8 @@ export function useGameModule() {
       gameStore.setGame({
         channelName,
         id,
-        opponentId: null
+        opponentId: null,
       })
-    }
-  };
+    },
+  }
 }

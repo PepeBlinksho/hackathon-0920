@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { UserType } from '../../stores/UserStore';
+import type { UserType } from '../../stores/UserStore'
 
 defineProps<{
-  user: UserType,
+  user: UserType
   startGame: () => Promise<void>
 }>()
 </script>
@@ -13,8 +13,10 @@ defineProps<{
       <div>
         {{ user }}
       </div>
-      <button class="btn btn-primary"
-              @click="startGame">
+      <button
+        class="btn btn-primary"
+        @click="startGame"
+      >
         対戦する
       </button>
     </div>

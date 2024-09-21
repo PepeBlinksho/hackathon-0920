@@ -1,30 +1,30 @@
 import { defineStore } from 'pinia'
 
-export type GameType = {
-  "channelName": string | null,
-  id: number | null,
-  opponentId: number | null,
+export interface GameType {
+  channelName: string | null
+  id: number | null
+  opponentId: number | null
 }
 
 export const useGameStore = defineStore('game', {
   state: () => {
     return {
       game: {
-        "channelName": null,
+        channelName: null,
         id: null,
         opponentId: null,
-      } as GameType
+      } as GameType,
     }
   },
   getters: {
-    get() {}
+    get() { },
   },
   actions: {
     setGame(game: GameType) {
-      this.game = game;
+      this.game = game
     },
     resetGame() {
-      this.game.channelName = null;
-    }
+      this.game.channelName = null
+    },
   },
 })

@@ -12,14 +12,14 @@ pre-push:
 pre-commit:
   parallel: true
   commands:
-    # eslint:
-    #   glob: '*.{vue,js,jsx,cjs,mjs,ts,tsx,cts,mts}'
-    #   run: |
-    #     npx eslint --fix {staged_files}
-    #   stage_fixed: true
-    #   skip:
-    #     - merge
-    #     - rebase
+    eslint:
+      glob: '*.{vue,js,jsx,cjs,mjs,ts,tsx,cts,mts}'
+      run: |
+        npx eslint --fix {staged_files}
+      stage_fixed: true
+      skip:
+        - merge
+        - rebase
     type-check:
       tags: frontend type check
       run: npx vue-tsc -b

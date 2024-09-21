@@ -1,9 +1,9 @@
-import { useGameModule } from "../../../modules/useGameModule";
-import { useAblyClientStore } from "../../../stores/AblyClientStore";
-import { useGameStore } from "../../../stores/GameStore";
-import { useUserStore } from "../../../stores/UserStore";
-import { GameStateType } from "./Main.vue";
 import type Ably from 'ably'
+import type { GameStateType } from './Main.vue'
+import { useGameModule } from '../../../modules/useGameModule'
+import { useAblyClientStore } from '../../../stores/AblyClientStore'
+import { useGameStore } from '../../../stores/GameStore'
+import { useUserStore } from '../../../stores/UserStore'
 
 export function _useGameFunc() {
   const gameStore = useGameStore()
@@ -13,32 +13,32 @@ export function _useGameFunc() {
   const gameModule = useGameModule()
 
   return {
-   async wonGame(gameState: GameStateType) {
+    async wonGame(gameState: GameStateType) {
       ablyClientStore.$state.channel?.publish('RESULT', {
-        result: 'lose'
+        result: 'lose',
       })
 
-      gameState.result = 'won';
+      gameState.result = 'won'
       console.log('won')
       await gameModule.won(gameStore.$state.game.id!, userStore.user.id!)
-      gameState.isGameFinish = true;
+      gameState.isGameFinish = true
     },
 
-     async drawGame(gameState: GameStateType) {
+    async drawGame(gameState: GameStateType) {
       ablyClientStore.$state.channel?.publish('RESULT', {
-        result: 'draw'
+        result: 'draw',
       })
 
-      gameState.result = 'draw';
+      gameState.result = 'draw'
       console.log('draw')
-      gameState.isGameFinish = true;
+      gameState.isGameFinish = true
       await gameModule.draw(gameStore.$state.game.id!)
     },
 
     // 負けの場合を実装する
 
-    async startGame(gameState: GameStateType)  {
-      gameState.isMatching = true;
+    async startGame(gameState: GameStateType) {
+      gameState.isMatching = true
       const game = await gameModule.query()
       if (!game) {
         await this.createGame(gameState)
@@ -46,23 +46,23 @@ export function _useGameFunc() {
       else {
         gameModule.setGameStore(
           game.channel_name,
-          game.id
+          game.id,
         )
 
         this.participateGame(game.channel_name, gameState)
       }
     },
 
-    participateGame(channelId: string, gameState: GameStateType)  {
+    participateGame(channelId: string, gameState: GameStateType) {
       ablyClientStore.connectToChannel(
         channelId,
         this.subscribeCallback(gameState),
-        this.presenceCallback(gameState)
+        this.presenceCallback(gameState),
       )
     },
 
     async createGame(gameState: GameStateType) {
-      await gameModule.createGame(userStore.user.id!);
+      await gameModule.createGame(userStore.user.id!)
       this.participateGame(gameStore.$state.game.channelName!, gameState)
     },
 
@@ -76,14 +76,13 @@ export function _useGameFunc() {
 
         if (message.name === 'RESULT' && message.clientId !== userStore.user.id?.toString()) {
           gameState.result = message.data.result
-          gameState.isGameFinish = true;
+          gameState.isGameFinish = true
           return
         }
 
         if (message.name === 'GAME_START') {
           gameState.isMatching = false
           gameState.isGameStart = true
-          return
         }
 
         // this.channel.publish("MESSAGE", "Here is my first message!")
@@ -93,7 +92,7 @@ export function _useGameFunc() {
     },
 
     presenceCallback(gameState: GameStateType) {
-       return async (member: Ably.PresenceMessage) => {
+      return async (member: Ably.PresenceMessage) => {
         if (gameState.isGameFinish) {
           console.log('ゲームは終了しています。')
           return
@@ -104,17 +103,15 @@ export function _useGameFunc() {
           ablyClientStore.$state.channel?.publish('GAME_START', {})
 
           await gameModule.start(gameStore.$state.game.id!, Number(member.clientId))
-          return;
+          return
         }
 
         // 相手が落ちた場合: 勝ち
         if (member.action === 'leave' && member.clientId !== userStore.user.id?.toString()) {
           console.log('回線落ち')
           await this.wonGame(gameState)
-          return;
         }
       }
-     }
+    },
   }
 }
-

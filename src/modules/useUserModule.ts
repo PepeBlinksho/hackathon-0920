@@ -1,5 +1,5 @@
-import { useUserResource } from "../resources/useUserResource";
-import { useUserStore } from "../stores/UserStore";
+import { useUserResource } from '../resources/useUserResource'
+import { useUserStore } from '../stores/UserStore'
 
 export function useUserModule() {
   const userStore = useUserStore()
@@ -10,5 +10,5 @@ export function useUserModule() {
       const res = await resource.query(userId)
       userStore.setUser(res.data.user)
     },
-  };
+  }
 }
