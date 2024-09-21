@@ -32,6 +32,10 @@ const gameState = reactive<GameStateType>({
 })
 
 const wonGame = async () => {
+  ablyClientStore.$state.channel?.publish('RESULT', {
+    result: 'lose'
+  })
+
   gameState.isGameFinish = true;
   gameState.result = 'won';
   console.log('won')
@@ -39,6 +43,10 @@ const wonGame = async () => {
 }
 
 const drawGame = async () => {
+  ablyClientStore.$state.channel?.publish('RESULT', {
+    result: 'draw'
+  })
+
   gameState.isGameFinish = true;
   gameState.result = 'draw';
   console.log('draw')
@@ -49,6 +57,10 @@ const drawGame = async () => {
 
 const subscribeCallback = (message: Ably.InboundMessage) => {
   console.log(message)
+  if (message.name === 'RESULT') {
+    gameState.result = message.data.result
+  }
+
   // this.channel.publish("MESSAGE", "Here is my first message!")
   // gameのロジックを書く
   // 受信したらゲームが動くようにする.subscribeは送信者も受信可能
@@ -123,20 +135,20 @@ onBeforeMount(async () => {
 
 <template>
   <div class="w-full h-screen">
+    <div v-if="gameState.result">
+      ゲーム終了画面
+      result: {{ gameState.result }}
+    </div>
     <!-- in gage -->
-    <template v-if="gameState.isGameStart">
+    <div v-else-if="gameState.isGameStart">
       ゲーム中
       <button class="btn btn-info" @click="wonGame">勝ち</button>
       <button class="btn btn-success" @click="drawGame">引き分けにする</button>
-    </template>
-    <template v-else-if="gameState.result">
-      ゲーム終了画面
-      result: {{ gameState.result }}
-    </template>
-    <template v-else>
+    </div>
+    <div v-else>
       <UiProgress v-if="isShowProgress" />
       <UiMain v-else :user="userStore.$state.user"
                      :startGame />
-    </template>
+    </div>
   </div>
 </template>
