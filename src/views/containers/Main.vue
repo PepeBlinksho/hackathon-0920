@@ -49,8 +49,8 @@ const drawGame = async () => {
 
   gameState.result = 'draw';
   console.log('draw')
-  await gameModule.draw(gameStore.$state.game.id!)
   gameState.isGameFinish = true;
+  await gameModule.draw(gameStore.$state.game.id!)
 }
 
 // 負けの場合を実装する
@@ -79,7 +79,6 @@ const subscribeCallback = (message: Ably.InboundMessage) => {
 }
 
 const presenceCallback = async (member: Ably.PresenceMessage) => {
-  console.log(member)
   if (gameState.isGameFinish) {
     console.log('ゲームは終了しています。')
     return
@@ -130,7 +129,6 @@ const isShowProgress = computed(() => {
 })
 
 watch(() => { return gameState.isGameFinish }, (isGameFinish) => {
-  console.log(isGameFinish)
   if (isGameFinish) {
     ablyClientStore.leaveChannel()
   }
