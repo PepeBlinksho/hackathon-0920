@@ -16,6 +16,15 @@ export function useGameModule() {
       const res = await resource.create(channelName, userId)
       this.setGameStore(channelName, res.data.id)
     },
+    async start(id: number, opponentId: number) {
+      await resource.start(id, opponentId)
+    },
+    async draw(id: number) {
+      await resource.draw(id)
+    },
+    async won(id: number, userId: number) {
+      await resource.won(id, userId)
+    },
     setGameStore(channelName: string, id: number) {
       gameStore.setGame({
         channelName,

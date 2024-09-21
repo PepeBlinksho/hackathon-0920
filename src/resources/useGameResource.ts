@@ -20,6 +20,18 @@ export function useGameResource() {
       return axios.post(url, {
         opponent_id: opponentId
       });
-    }
+    },
+    async draw(id: number) {
+      const url = `https://nogame-f18ee607639d.herokuapp.com/api/games/${id}/draw`;
+      return axios.post(url, {
+        id
+      });
+    },
+    async won(id: number, userId: number) {
+      const url = `https://nogame-f18ee607639d.herokuapp.com/api/games/${id}/won`;
+      return axios.post(url, {
+        "user_id": userId
+      });
+    },
   };
 }

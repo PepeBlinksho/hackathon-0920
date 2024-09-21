@@ -25,26 +25,23 @@ export const useAblyClientStore = defineStore('ablyClient', {
         console.log("Connected to Ably!")
       })
     },
-    connectToChannel(channelName: string) {
+    connectToChannel(
+      channelName: string,
+      subscribeCallback: (message: Ably.InboundMessage) => void,
+      presenceCallback: (member: Ably.PresenceMessage) => void
+    ) {
       if (!this.client) return
       this.channel = this.client.channels.get(channelName)
       // ゲームのイベントロジック実装
       // userIdを送るようにする
-      this.channel.subscribe("MESSAGE", (message) => {
-        console.log("Message received: " + message)
-      });
-
-      this.channel.publish("MESSAGE", "Here is my first message!")
+      this.channel.subscribe("MESSAGE",subscribeCallback);
+      this.channel.presence.subscribe(presenceCallback);
       this.channel.presence.enter()
-
-      this.channel.presence.subscribe((member) => {
-        console.log(member)
-        console.log(member.clientId + ' entered realtime-chat');
-      });
     },
     // ゲーム終了時
     leaveChannel() {
       this.channel?.unsubscribe()
+      this.channel?.detach()
     }
   },
 })
