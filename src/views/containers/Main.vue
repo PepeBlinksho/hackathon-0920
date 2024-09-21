@@ -36,10 +36,10 @@ const wonGame = async () => {
     result: 'lose'
   })
 
-  gameState.isGameFinish = true;
   gameState.result = 'won';
   console.log('won')
   await gameModule.won(gameStore.$state.game.id!, userStore.user.id!)
+  gameState.isGameFinish = true;
 }
 
 const drawGame = async () => {
@@ -47,18 +47,19 @@ const drawGame = async () => {
     result: 'draw'
   })
 
-  gameState.isGameFinish = true;
   gameState.result = 'draw';
   console.log('draw')
   await gameModule.draw(gameStore.$state.game.id!)
+  gameState.isGameFinish = true;
 }
 
 // 負けの場合を実装する
 
 const subscribeCallback = (message: Ably.InboundMessage) => {
   console.log(message)
-  if (message.name === 'RESULT') {
+  if (message.name === 'RESULT' && message.clientId !== userStore.user.id?.toString()) {
     gameState.result = message.data.result
+    gameState.isGameFinish = true;
     return
   }
 
@@ -89,6 +90,7 @@ const presenceCallback = async (member: Ably.PresenceMessage) => {
 
   // 相手が落ちた場合: 勝ち
   if (member.action === 'leave' && member.clientId !== userStore.user.id?.toString()) {
+    console.log('回線落ち')
     await wonGame()
     return;
   }
