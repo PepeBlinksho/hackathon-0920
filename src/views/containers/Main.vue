@@ -6,27 +6,35 @@ import UiMain from '../components/UiMain.vue'
 import { computed, onBeforeMount, ref } from 'vue';
 import { RemovableRef, useStorage } from '@vueuse/core';
 import { useGameModule } from '../../modules/useGameModule';
-import { v4 as uuidv4 } from 'uuid';
+import { useAblyClientStore } from '../../stores/AblyClientStore';
+import { useGameStore } from '../../stores/GameStore';
 
 const userStore = useUserStore()
+const ablyClientStore = useAblyClientStore()
+const gameStore = useGameStore()
+
 const userModule = useUserModule()
 const gameModule = useGameModule()
 const userId: RemovableRef<number | null> = useStorage('userId', null)
 
 const mounted = ref(false)
 
+const participateGame = (channelId: string) => {
+  ablyClientStore.connectToChannel(channelId)
+}
+
 const createGame = async () => {
-  await gameModule.createGame(uuidv4(), userStore.user.id!);
+  await gameModule.createGame(userStore.user.id!);
+  participateGame(gameStore.$state.game.channelName!)
 }
 
 const searchGame = async () => {
-  const games = await gameModule.query()
-  if (!games) {
+  const game = await gameModule.query()
+  if (!game) {
     await createGame()
   }
   else {
-    // ある時の処理実装
-    // gameに参加する
+    participateGame(game.channel_name)
   }
 }
 
@@ -35,6 +43,10 @@ const isShowProgress = computed(() => {
 })
 
 onBeforeMount(async () => {
+  if (!ablyClientStore.client) {
+    ablyClientStore.createAblyClient()
+  }
+
   await userModule.query(userId.value)
   mounted.value = true
 })

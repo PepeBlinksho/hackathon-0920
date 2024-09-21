@@ -1,8 +1,9 @@
 import { useGameResource } from "../resources/useGameResource";
-// import { useGameStore } from "../stores/GameStore";
+import { useGameStore } from "../stores/GameStore";
+import { v4 as uuidv4 } from 'uuid';
 
 export function useGameModule() {
-  // const gameStore = useGameStore()
+  const gameStore = useGameStore()
   const resource = useGameResource()
 
   return {
@@ -10,9 +11,10 @@ export function useGameModule() {
       const res = await resource.query()
       return res.data.game
     },
-    async createGame(channelName: string, userId: number) {
+    async createGame(userId: number) {
+      const channelName = uuidv4()
+      gameStore.setGame({channelName})
       await resource.create(channelName, userId)
-      // gameStoreに格納する
     }
   };
 }
