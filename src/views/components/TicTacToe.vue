@@ -10,7 +10,9 @@ const model = defineModel<GameStateType>()
 const userStore = useUserStore()
 const ablyClientStore = useAblyClientStore()
 
-const board = ref<Array<string | null>>(Array.from({ length: 9 }).fill(null))
+const initialBoardValue = Array.from({ length: 9 }, () => null as string | null)
+
+const board = ref<Array<string | null>>(initialBoardValue)
 const myRole = ref<'X' | 'O' | null>(null)
 const currentPlayer = ref<'X' | 'O' | null>(null)
 const winner = ref<string | null>(null)
@@ -60,7 +62,7 @@ function checkWinner() {
 // });
 
 function reset() {
-  board.value = Array.from({ length: 9 }).fill(null)
+  board.value = initialBoardValue
 }
 
 // とりあえずHOSTが先行になるようにしてる
