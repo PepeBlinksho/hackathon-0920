@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type { RemovableRef } from '@vueuse/core'
-import { loadStripe } from '@stripe/stripe-js'
 import { useStorage } from '@vueuse/core'
-import { computed, onBeforeMount, onMounted, reactive, ref, watch } from 'vue'
+import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
 import { useUserModule } from '../../../modules/useUserModule'
 import { useAblyClientStore } from '../../../stores/AblyClientStore'
 import { useUserStore } from '../../../stores/UserStore'
+import StripeForm from '../../components/StripeForm.vue'
 import TicTacToe from '../../components/TicTacToe.vue'
 import UiMain from '../../components/UiMain.vue'
 import UiProgress from '../../components/UiProgress.vue'
@@ -56,50 +56,6 @@ onBeforeMount(async () => {
 
   mounted.value = true
 })
-
-export interface DataType {
-  stripe: any
-  stripeElements: any
-  cardForm: any
-  result: any
-}
-
-const data = reactive<DataType>({
-  stripe: null,
-  stripeElements: null,
-  cardForm: null,
-  result: null,
-})
-
-async function payment(event: any) {
-  event.target.disabled = true
-  event.target.textContent = '決済処理中'
-
-  const elements = data.stripeElements
-  if (data.stripe) {
-    await data.stripe.confirmSetup({
-      elements,
-      confirmParams: {
-        return_url: 'http://localhost:5173/',
-      },
-    })
-  }
-}
-
-onMounted(async () => {
-  data.stripe = await loadStripe('pk_test_51Op74tIfAB2tP1ySnaqwHzzWnrlu8cxh6EskQR0Vkz5xIdn3JXMAlOK1LzEEDOihALjX3aHB0V8aRzE8OV4iwkZV00qLKysZ8K')
-  // ここでuserId取得してこないとuserStoreが空になってしまう
-  await userModule.query(userId.value)
-  const clientSecret = userStore.user.client_secret
-  data.stripeElements = data.stripe.elements({
-    clientSecret,
-    appearance: {
-      theme: 'stripe',
-    },
-  })
-  data.cardForm = data.stripeElements.create('payment')
-  data.cardForm.mount('#payment-element')
-})
 </script>
 
 <template>
@@ -132,11 +88,6 @@ onMounted(async () => {
       />
     </div>
     <UiProgress v-if="isShowProgress" />
-    <form id="payment-form">
-      <div id="payment-element" />
-      <button type="button" @click="payment($event)">
-        カード情報を保存する
-      </button>
-    </form>
+    <StripeForm />
   </div>
 </template>
