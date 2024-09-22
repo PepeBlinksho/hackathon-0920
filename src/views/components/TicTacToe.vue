@@ -5,6 +5,11 @@ import { useAblyClientStore } from '../../stores/AblyClientStore'
 import { useUserStore } from '../../stores/UserStore'
 // import { useAbly } from './useAbly'; // 仮定: AblyのカスタムHookを作成し、それを使用
 
+const props = defineProps<{
+  wonGame: () => Promise<void>
+  drawGame: () => Promise<void>
+}>()
+
 const model = defineModel<GameStateType>()
 
 const userStore = useUserStore()
@@ -55,12 +60,6 @@ function checkWinner() {
   })
 }
 
-// subscribeToMoves((move) => {
-//   board.value[move.index] = move.player;
-//   checkWinner();
-//   currentPlayer.value = currentPlayer.value === 'X' ? 'O' : 'X';
-// });
-
 function reset() {
   board.value = initialBoardValue
 }
@@ -86,9 +85,13 @@ onMounted(() => {
     myRole.value = message.data.hostRole === 'X' ? 'O' : 'X'
   })
 
-  ablyClientStore.channel?.subscribe('MOVE', (message) => {
+  ablyClientStore.channel?.subscribe('MOVE', async (message) => {
     board.value[message.data.index] = message.data.player
     checkWinner()
+    if (winner.value === myRole.value) {
+      await props.wonGame()
+    }
+
     currentPlayer.value = message.data.player === 'X' ? 'O' : 'X'
   })
 
