@@ -63,6 +63,7 @@ export function _useGameFunc() {
 
     async createGame(gameState: GameStateType) {
       await gameModule.createGame(userStore.user.id!)
+      gameState.isHost = true
       this.participateGame(gameStore.$state.game.channelName!, gameState)
     },
 

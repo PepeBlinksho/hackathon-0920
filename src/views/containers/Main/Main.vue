@@ -5,6 +5,7 @@ import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
 import { useUserModule } from '../../../modules/useUserModule'
 import { useAblyClientStore } from '../../../stores/AblyClientStore'
 import { useUserStore } from '../../../stores/UserStore'
+import TicTacToe from '../../components/TicTacToe.vue'
 import UiMain from '../../components/UiMain.vue'
 import UiProgress from '../../components/UiProgress.vue'
 import { _useGameFunc } from './_useGameFunc'
@@ -13,6 +14,7 @@ export interface GameStateType {
   isGameStart: boolean
   isGameFinish: boolean
   isMatching: boolean
+  isHost: boolean
   result: 'won' | 'lose' | 'draw' | null
 }
 
@@ -28,6 +30,7 @@ const gameState = reactive<GameStateType>({
   isGameStart: false,
   isGameFinish: false,
   isMatching: false,
+  isHost: false,
   result: null,
 })
 
@@ -65,14 +68,17 @@ onBeforeMount(async () => {
       マッチング中
     </div>
     <!-- in gage -->
-    <div v-else-if="gameState.isGameStart">
+    <div v-else-if="gameState.isGameStart" class="flex flex-col gap-10">
       ゲーム中
-      <button class="btn btn-info" @click="gameFunc.wonGame(gameState)">
-        勝ち
-      </button>
-      <button class="btn btn-success" @click="gameFunc.drawGame(gameState)">
-        引き分けにする
-      </button>
+      <div class="flex gap-4">
+        <button class="btn btn-info" @click="gameFunc.wonGame(gameState)">
+          勝ち
+        </button>
+        <button class="btn btn-success" @click="gameFunc.drawGame(gameState)">
+          引き分けにする
+        </button>
+      </div>
+      <TicTacToe v-model="gameState" />
     </div>
     <div v-else>
       <UiMain
