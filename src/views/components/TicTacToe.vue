@@ -68,10 +68,12 @@ function reset() {
 // とりあえずHOSTが先行になるようにしてる
 function selectFirstPlayer() {
   const firstPlayer = Math.random() < 0.5 ? 'X' : 'O'
+  const rndMyRole = Math.random() < 0.5 ? 'X' : 'O'
   currentPlayer.value = firstPlayer
-  myRole.value = firstPlayer
+  myRole.value = rndMyRole
   ablyClientStore.channel?.publish('GAME_START', {
-    hostRole: firstPlayer,
+    hostRole: rndMyRole,
+    currentPlayer: firstPlayer,
   })
 }
 
@@ -80,7 +82,7 @@ onMounted(() => {
     if (message.clientId === userStore.user.id?.toString())
       return
 
-    currentPlayer.value = message.data.hostRole
+    currentPlayer.value = message.data.currentPlayer
     myRole.value = message.data.hostRole === 'X' ? 'O' : 'X'
   })
 
