@@ -5,6 +5,7 @@ import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
 import { useUserModule } from '../../../modules/useUserModule'
 import { useAblyClientStore } from '../../../stores/AblyClientStore'
 import { useUserStore } from '../../../stores/UserStore'
+import StripeForm from '../../components/StripeForm.vue'
 import TicTacToe from '../../components/TicTacToe.vue'
 import UiMain from '../../components/UiMain.vue'
 import UiProgress from '../../components/UiProgress.vue'
@@ -98,6 +99,7 @@ onBeforeMount(async () => {
         :user="userStore.$state.user"
         :start-game="() => gameFunc.startGame(gameState)"
       />
+      <StripeForm :user="userStore.$state.user" />
     </div>
     <UiProgress v-if="isShowProgress" />
   </div>
