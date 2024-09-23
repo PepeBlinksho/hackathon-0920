@@ -31,6 +31,13 @@ async function payment(event: any) {
       elements,
       confirmParams: {
         return_url: returnUrl,
+        payment_method_data: {
+          billing_details: {
+            address: {
+              country: 'JP',
+            },
+          },
+        },
       },
     })
   }
@@ -39,19 +46,27 @@ async function payment(event: any) {
 onMounted(async () => {
   state.stripe = await loadStripe('pk_test_51Op74tIfAB2tP1ySnaqwHzzWnrlu8cxh6EskQR0Vkz5xIdn3JXMAlOK1LzEEDOihALjX3aHB0V8aRzE8OV4iwkZV00qLKysZ8K')
   const clientSecret = props.user.client_secret
-  if (!state.stripe) {
-    console.log('stripeの取得ができていません')
+  if (!state.stripe || !clientSecret) {
+    console.log('stripeの取得または、clientSecretの取得ができていません')
     return
   }
 
   state.stripeElements = state.stripe.elements({
     clientSecret,
     appearance: {
-      theme: 'stripe',
+      theme: 'night',
     },
   })
 
-  state.cardForm = state.stripeElements.create('payment')
+  state.cardForm = state.stripeElements.create('payment', {
+    fields: {
+      billingDetails: {
+        address: {
+          country: 'never',
+        },
+      },
+    },
+  })
   state.cardForm.mount('#payment-element')
 })
 </script>
