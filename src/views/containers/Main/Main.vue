@@ -83,7 +83,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div class="w-full h-screen max-w-108">
+  <div class="w-full h-screen max-w-108 flex items-center justify-center m-auto">
     <div v-if="gameState.result">
       <UiGameResult
         :result="gameState.result"
@@ -91,7 +91,7 @@ onBeforeMount(async () => {
       />
     </div>
     <!-- in gage -->
-    <div v-else-if="gameState.isGameStart" class="flex flex-col gap-10">
+    <div v-else-if="gameState.isGameStart">
       <InGame
         v-model="gameState"
         :won-game="() => gameFunc.wonGame(gameState)"

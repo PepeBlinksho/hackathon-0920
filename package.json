@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@stripe/stripe-js": "^4.5.0",
+    "@tailwindcss/typography": "^0.5.15",
     "@types/uuid": "^10.0.0",
     "@vueuse/core": "^11.1.0",
     "ably": "^2.4.0",

@@ -5,3 +5,7 @@
 .max-w-108 {
   max-width: 432px !important;
 }
+
+.m-auto {
+  margin: 0 auto;
+}
