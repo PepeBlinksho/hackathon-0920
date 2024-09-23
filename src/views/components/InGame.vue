@@ -3,7 +3,6 @@ import type { GameStateType } from '../containers/Main/Main.vue'
 import { onMounted, ref } from 'vue'
 import { useAblyClientStore } from '../../stores/AblyClientStore'
 import { useUserStore } from '../../stores/UserStore'
-// import { useAbly } from './useAbly'; // 仮定: AblyのカスタムHookを作成し、それを使用
 
 const props = defineProps<{
   wonGame: () => Promise<void>
@@ -21,7 +20,6 @@ const board = ref<Array<string | null>>(initialBoardValue)
 const myRole = ref<'X' | 'O' | null>(null)
 const currentPlayer = ref<'X' | 'O' | null>(null)
 const winner = ref<string | null>(null)
-// const { publishMove, subscribeToMoves } = useAbly();
 
 function play(index: number) {
   if (myRole.value !== currentPlayer.value) {
@@ -64,7 +62,6 @@ function reset() {
   board.value = initialBoardValue
 }
 
-// とりあえずHOSTが先行になるようにしてる
 function selectFirstPlayer() {
   const firstPlayer = Math.random() < 0.5 ? 'X' : 'O'
   const rndMyRole = Math.random() < 0.5 ? 'X' : 'O'
@@ -95,7 +92,6 @@ onMounted(() => {
     currentPlayer.value = message.data.player === 'X' ? 'O' : 'X'
   })
 
-  // channelをsubscribeする
   if (model.value?.isHost) {
     selectFirstPlayer()
   }
@@ -103,6 +99,12 @@ onMounted(() => {
 </script>
 
 <template>
+  ゲーム中
+  <div class="flex gap-4">
+    <button class="btn btn-success" @click="drawGame">
+      引き分けにする
+    </button>
+  </div>
   <div class="flex flex-col">
     <div class="board">
       <div v-for="(cell, index) in board" :key="index" class="cell" @click="play(index)">

@@ -5,9 +5,10 @@ import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
 import { useUserModule } from '../../../modules/useUserModule'
 import { useAblyClientStore } from '../../../stores/AblyClientStore'
 import { useUserStore } from '../../../stores/UserStore'
+import InGame from '../../components/InGame.vue'
 import StripeForm from '../../components/StripeForm.vue'
-import TicTacToe from '../../components/TicTacToe.vue'
-import UiMain from '../../components/UiMain.vue'
+import UiGameResult from '../../components/UiGameResult.vue'
+import UiHome from '../../components/UiHome.vue'
 import UiProgress from '../../components/UiProgress.vue'
 import { _useGameFunc } from './_useGameFunc'
 
@@ -47,7 +48,21 @@ async function goToHome() {
 }
 
 const isShowProgress = computed(() => {
-  return !mounted.value || gameState.isMatching
+  if (!mounted.value) {
+    return {
+      text: '初期化中',
+    }
+  }
+
+  if (gameState.isMatching) {
+    return {
+      text: 'マッチング中',
+    }
+  }
+
+  return {
+    text: '',
+  }
 })
 
 watch(() => {
@@ -68,39 +83,31 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div class="w-full h-screen">
+  <div class="w-full h-screen max-w-108">
     <div v-if="gameState.result">
-      ゲーム終了画面
-      result: {{ gameState.result }}
-      <button class="btn btn-success" @click="goToHome">
-        ホームに戻る
-      </button>
-    </div>
-    <!-- matching -->
-    <div v-else-if="gameState.isMatching">
-      マッチング中
+      <UiGameResult
+        :result="gameState.result"
+        :go-to-home
+      />
     </div>
     <!-- in gage -->
     <div v-else-if="gameState.isGameStart" class="flex flex-col gap-10">
-      ゲーム中
-      <div class="flex gap-4">
-        <button class="btn btn-success" @click="gameFunc.drawGame(gameState)">
-          引き分けにする
-        </button>
-      </div>
-      <TicTacToe
+      <InGame
         v-model="gameState"
         :won-game="() => gameFunc.wonGame(gameState)"
         :draw-game="() => gameFunc.drawGame(gameState)"
       />
     </div>
-    <div v-else-if="mounted">
-      <UiMain
+    <div v-else-if="!isShowProgress.text">
+      <UiHome
         :user="userStore.$state.user"
         :start-game="() => gameFunc.startGame(gameState)"
       />
       <StripeForm :user="userStore.$state.user" />
     </div>
-    <UiProgress v-if="isShowProgress" />
+    <UiProgress
+      v-if="isShowProgress.text"
+      :text="isShowProgress.text"
+    />
   </div>
 </template>
