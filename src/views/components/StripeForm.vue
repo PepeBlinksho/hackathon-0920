@@ -26,11 +26,11 @@ async function payment(event: any) {
 
   const elements = state.stripeElements
   if (state.stripe && elements) {
+    const returnUrl = import.meta.env.MODE === 'development' ? 'http://localhost:5173/' : 'https://hackathon-2mix.web.app'
     await state.stripe.confirmSetup({
       elements,
       confirmParams: {
-        return_url: 'http://localhost:5173/',
-        // return_url: 'https://hackathon-2mix.web.app/',
+        return_url: returnUrl,
         payment_method_data: {
           billing_details: {
             address: {
@@ -72,9 +72,13 @@ onMounted(async () => {
 </script>
 
 <template>
-  <form id="payment-form">
+  <form id="payment-form" class="flex flex-col">
     <div id="payment-element" />
-    <button type="button" @click="payment($event)">
+    <button
+      class="btn btn-primary w-full mt-3"
+      type="button"
+      @click="payment($event)"
+    >
       カード情報を保存する
     </button>
   </form>

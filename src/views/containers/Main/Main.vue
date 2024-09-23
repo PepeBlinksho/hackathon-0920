@@ -5,9 +5,12 @@ import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
 import { useUserModule } from '../../../modules/useUserModule'
 import { useAblyClientStore } from '../../../stores/AblyClientStore'
 import { useUserStore } from '../../../stores/UserStore'
+import InGame from '../../components/InGame.vue'
 import StripeForm from '../../components/StripeForm.vue'
-import TicTacToe from '../../components/TicTacToe.vue'
-import UiMain from '../../components/UiMain.vue'
+import UiGameInfoDialog from '../../components/UiGameInfoDialog.vue'
+import UiGameResult from '../../components/UiGameResult.vue'
+import UiHome from '../../components/UiHome.vue'
+import UiPointInfoDialog from '../../components/UiPointInfoDialog.vue'
 import UiProgress from '../../components/UiProgress.vue'
 import { _useGameFunc } from './_useGameFunc'
 
@@ -47,8 +50,24 @@ async function goToHome() {
 }
 
 const isShowProgress = computed(() => {
-  return !mounted.value || gameState.isMatching
+  if (!mounted.value) {
+    return {
+      text: '初期化中',
+    }
+  }
+
+  if (gameState.isMatching) {
+    return {
+      text: 'マッチング中',
+    }
+  }
+
+  return {
+    text: '',
+  }
 })
+
+console.log(import.meta.env.MODE)
 
 watch(() => {
   return gameState.isGameFinish
@@ -68,39 +87,43 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div class="w-full h-screen">
+  <div class="w-full h-screen max-w-108 flex flex-col items-center justify-center m-auto">
     <div v-if="gameState.result">
-      ゲーム終了画面
-      result: {{ gameState.result }}
-      <button class="btn btn-success" @click="goToHome">
-        ホームに戻る
-      </button>
-    </div>
-    <!-- matching -->
-    <div v-else-if="gameState.isMatching">
-      マッチング中
+      <UiGameResult
+        :result="gameState.result"
+        :go-to-home
+      />
     </div>
     <!-- in gage -->
-    <div v-else-if="gameState.isGameStart" class="flex flex-col gap-10">
-      ゲーム中
-      <div class="flex gap-4">
-        <button class="btn btn-success" @click="gameFunc.drawGame(gameState)">
-          引き分けにする
-        </button>
-      </div>
-      <TicTacToe
+    <div v-else-if="gameState.isGameStart">
+      <InGame
         v-model="gameState"
         :won-game="() => gameFunc.wonGame(gameState)"
         :draw-game="() => gameFunc.drawGame(gameState)"
       />
     </div>
-    <div v-else-if="mounted">
-      <UiMain
-        :user="userStore.$state.user"
-        :start-game="() => gameFunc.startGame(gameState)"
-      />
-      <StripeForm :user="userStore.$state.user" />
+    <div v-else-if="!isShowProgress.text">
+      <div class="flex flex-col gap-3">
+        <UiHome
+          :user="userStore.$state.user"
+          :start-game="() => gameFunc.startGame(gameState)"
+        />
+        <StripeForm
+          v-if="!userStore.$state.user.payment_method_created"
+          :user="userStore.$state.user"
+        />
+      </div>
     </div>
-    <UiProgress v-if="isShowProgress" />
+    <UiProgress
+      v-if="isShowProgress.text"
+      :text="isShowProgress.text"
+    />
+    <footer class="footer footer-center text-base-content p-4">
+      <aside>
+        <p>Copyright © {{ new Date().getFullYear() }} - All right reserved by 2-mix</p>
+      </aside>
+    </footer>
+    <UiPointInfoDialog />
+    <UiGameInfoDialog />
   </div>
 </template>

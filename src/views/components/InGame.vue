@@ -3,7 +3,6 @@ import type { GameStateType } from '../containers/Main/Main.vue'
 import { onMounted, ref } from 'vue'
 import { useAblyClientStore } from '../../stores/AblyClientStore'
 import { useUserStore } from '../../stores/UserStore'
-// import { useAbly } from './useAbly'; // 仮定: AblyのカスタムHookを作成し、それを使用
 
 const props = defineProps<{
   wonGame: () => Promise<void>
@@ -21,7 +20,6 @@ const board = ref<Array<string | null>>(initialBoardValue)
 const myRole = ref<'X' | 'O' | null>(null)
 const currentPlayer = ref<'X' | 'O' | null>(null)
 const winner = ref<string | null>(null)
-// const { publishMove, subscribeToMoves } = useAbly();
 
 function play(index: number) {
   if (myRole.value !== currentPlayer.value) {
@@ -60,11 +58,6 @@ function checkWinner() {
   })
 }
 
-function reset() {
-  board.value = initialBoardValue
-}
-
-// とりあえずHOSTが先行になるようにしてる
 function selectFirstPlayer() {
   const firstPlayer = Math.random() < 0.5 ? 'X' : 'O'
   const rndMyRole = Math.random() < 0.5 ? 'X' : 'O'
@@ -95,7 +88,6 @@ onMounted(() => {
     currentPlayer.value = message.data.player === 'X' ? 'O' : 'X'
   })
 
-  // channelをsubscribeする
   if (model.value?.isHost) {
     selectFirstPlayer()
   }
@@ -103,24 +95,28 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col">
-    <div class="board">
-      <div v-for="(cell, index) in board" :key="index" class="cell" @click="play(index)">
-        {{ cell }}
+  <div class="flex flex-col gap-8 items-center">
+    <div class="flex flex-col gap-1 prose">
+      <h2 class="mb-0">
+        あなたは{{ myRole }}です！
+      </h2>
+      <h3>
+        {{ myRole === currentPlayer ? 'あなたの' : '相手の' }}ターンです！
+      </h3>
+    </div>
+    <div class="flex flex-col">
+      <div class="board">
+        <div v-for="(cell, index) in board" :key="index" class="cell" @click="play(index)">
+          {{ cell }}
+        </div>
+      </div>
+      <div v-if="winner">
+        勝者: {{ winner === myRole ? '私' : '相手' }}
       </div>
     </div>
-    <div class="btn" @click="reset">
-      リセット
-    </div>
-    <div>
-      自分のロール: {{ myRole }}
-    </div>
-    <div>
-      現在のターン: {{ myRole === currentPlayer ? '私' : '相手' }}
-    </div>
-    <div v-if="winner">
-      勝者: {{ winner === myRole ? '私' : '相手' }}
-    </div>
+    <button class="btn btn-primary" @click="drawGame">
+      引き分けにする
+    </button>
   </div>
 </template>
 
