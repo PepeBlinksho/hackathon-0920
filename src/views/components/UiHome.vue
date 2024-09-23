@@ -8,7 +8,6 @@ const props = defineProps<{
   startGame: () => Promise<void>
 }>()
 
-const isHover = ref(false)
 const isInfoHover = ref(false)
 const isPointInfoHover = ref(false)
 
@@ -64,20 +63,26 @@ const isBtnDisabled = computed(() => {
         </div>
       </div>
       <div
+        v-if="isBtnDisabled"
         class="tooltip tooltip-secondary w-full"
-        :class="{ 'tooltip-open': isHover }"
         data-tip="カード情報登録後に対戦可能です"
       >
         <button
-          class="btn btn-primary w-full"
-          :class="{ 'btn-outline': isBtnDisabled }"
+          class="btn btn-primary w-full btn-outline"
           :disabled="isBtnDisabled"
-          @hover="isHover = true"
           @click="startGame"
         >
           対戦する
         </button>
       </div>
+      <button
+        v-else
+        class="btn btn-primary w-full"
+        :disabled="isBtnDisabled"
+        @click="startGame"
+      >
+        対戦する
+      </button>
     </div>
   </div>
 </template>
