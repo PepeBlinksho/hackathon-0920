@@ -99,8 +99,8 @@ onBeforeMount(async () => {
         :user="userStore.$state.user"
         :start-game="() => gameFunc.startGame(gameState)"
       />
+      <StripeForm :user="userStore.$state.user" />
     </div>
     <UiProgress v-if="isShowProgress" />
-    <StripeForm />
   </div>
 </template>

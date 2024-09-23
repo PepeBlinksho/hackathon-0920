@@ -1,14 +1,11 @@
 <script setup lang="ts">
-import type { RemovableRef } from '@vueuse/core'
+import type { UserType } from '../../stores/UserStore'
 import { loadStripe } from '@stripe/stripe-js'
-import { useStorage } from '@vueuse/core'
 import { onMounted, reactive } from 'vue'
-import { useUserModule } from '../../modules/useUserModule.ts'
-import { useUserStore } from '../../stores/UserStore'
 
-const userStore = useUserStore()
-const userModule = useUserModule()
-const userId: RemovableRef<number | null> = useStorage('userId', null)
+const props = defineProps<{
+  user: UserType
+}>()
 
 export interface DataType {
   stripe: any
@@ -41,9 +38,7 @@ async function payment(event: any) {
 
 onMounted(async () => {
   data.stripe = await loadStripe('pk_test_51Op74tIfAB2tP1ySnaqwHzzWnrlu8cxh6EskQR0Vkz5xIdn3JXMAlOK1LzEEDOihALjX3aHB0V8aRzE8OV4iwkZV00qLKysZ8K')
-  // ここでuserId取得してこないとuserStoreが空になってしまう
-  await userModule.query(userId.value)
-  const clientSecret = userStore.user.client_secret
+  const clientSecret = props.user.client_secret
   data.stripeElements = data.stripe.elements({
     clientSecret,
     appearance: {
