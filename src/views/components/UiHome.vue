@@ -24,7 +24,10 @@ const isBtnDisabled = computed(() => {
 <template>
   <div class="w-full h-full">
     <div class="flex flex-col gap-5 prose">
-      <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-2">
+        <h1 class="text-center text-primary mb-0">
+          Draw Tactics
+        </h1>
         <div
           class="cursor-pointer" @hover="isInfoHover = true"
           @click="openModal('game-info-modal')"
@@ -37,9 +40,6 @@ const isBtnDisabled = computed(() => {
             <InfoSvg />
           </div>
         </div>
-        <h1 class="text-center mb-0">
-          まる罰ゲーーーーーむ
-        </h1>
       </div>
       <div class="stat py-0">
         <div
@@ -48,7 +48,7 @@ const isBtnDisabled = computed(() => {
           @click="openModal('point-info-modal')"
         >
           <div
-            class="tooltip tooltip-secondary tooltip-left"
+            class="tooltip tooltip-secondary tooltip-right"
             :class="{ 'tooltip-open': isPointInfoHover }"
             data-tip="ポイントについて"
           >
