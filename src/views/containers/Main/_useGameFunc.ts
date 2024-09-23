@@ -19,8 +19,8 @@ export function _useGameFunc() {
       })
 
       gameState.result = 'won'
-      await gameModule.won(gameStore.$state.game.id!, userStore.user.id!)
       gameState.isGameFinish = true
+      await gameModule.won(gameStore.$state.game.id!, userStore.user.id!)
     },
 
     async drawGame(gameState: GameStateType) {

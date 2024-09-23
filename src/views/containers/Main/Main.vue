@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { RemovableRef } from '@vueuse/core'
 import { useStorage } from '@vueuse/core'
-import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
+import { computed, onBeforeMount, reactive, ref } from 'vue'
 import { useUserModule } from '../../../modules/useUserModule'
 import { useAblyClientStore } from '../../../stores/AblyClientStore'
 import { useUserStore } from '../../../stores/UserStore'
@@ -45,6 +45,7 @@ async function goToHome() {
   gameState.isHost = false
   gameState.result = null
   mounted.value = false
+  ablyClientStore.leaveChannel()
   await userModule.query(userId.value)
   mounted.value = true
 }
@@ -64,16 +65,6 @@ const isShowProgress = computed(() => {
 
   return {
     text: '',
-  }
-})
-
-console.log(import.meta.env.MODE)
-
-watch(() => {
-  return gameState.isGameFinish
-}, (isGameFinish) => {
-  if (isGameFinish) {
-    ablyClientStore.leaveChannel()
   }
 })
 
