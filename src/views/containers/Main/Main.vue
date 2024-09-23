@@ -35,6 +35,17 @@ const gameState = reactive<GameStateType>({
   result: null,
 })
 
+async function goToHome() {
+  gameState.isGameFinish = false
+  gameState.isGameStart = false
+  gameState.isMatching = false
+  gameState.isHost = false
+  gameState.result = null
+  mounted.value = false
+  await userModule.query(userId.value)
+  mounted.value = true
+}
+
 const isShowProgress = computed(() => {
   return !mounted.value || gameState.isMatching
 })
@@ -51,10 +62,8 @@ onBeforeMount(async () => {
   await userModule.query(userId.value)
 
   if (!ablyClientStore.client) {
-    await ablyClientStore.createAblyClient(userStore.user.id!)
+    await ablyClientStore.createAblyClient(userStore.user.id!, mounted)
   }
-
-  mounted.value = true
 })
 </script>
 
@@ -63,6 +72,9 @@ onBeforeMount(async () => {
     <div v-if="gameState.result">
       ゲーム終了画面
       result: {{ gameState.result }}
+      <button class="btn btn-success" @click="goToHome">
+        ホームに戻る
+      </button>
     </div>
     <!-- matching -->
     <div v-else-if="gameState.isMatching">
@@ -72,16 +84,17 @@ onBeforeMount(async () => {
     <div v-else-if="gameState.isGameStart" class="flex flex-col gap-10">
       ゲーム中
       <div class="flex gap-4">
-        <button class="btn btn-info" @click="gameFunc.wonGame(gameState)">
-          勝ち
-        </button>
         <button class="btn btn-success" @click="gameFunc.drawGame(gameState)">
           引き分けにする
         </button>
       </div>
-      <TicTacToe v-model="gameState" />
+      <TicTacToe
+        v-model="gameState"
+        :won-game="() => gameFunc.wonGame(gameState)"
+        :draw-game="() => gameFunc.drawGame(gameState)"
+      />
     </div>
-    <div v-else>
+    <div v-else-if="mounted">
       <UiMain
         :user="userStore.$state.user"
         :start-game="() => gameFunc.startGame(gameState)"

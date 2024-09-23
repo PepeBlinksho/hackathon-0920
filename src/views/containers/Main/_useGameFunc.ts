@@ -19,7 +19,6 @@ export function _useGameFunc() {
       })
 
       gameState.result = 'won'
-      console.log('won')
       await gameModule.won(gameStore.$state.game.id!, userStore.user.id!)
       gameState.isGameFinish = true
     },
@@ -30,7 +29,6 @@ export function _useGameFunc() {
       })
 
       gameState.result = 'draw'
-      console.log('draw')
       gameState.isGameFinish = true
       await gameModule.draw(gameStore.$state.game.id!)
     },
@@ -69,7 +67,6 @@ export function _useGameFunc() {
 
     subscribeCallback(gameState: GameStateType) {
       return (message: Ably.InboundMessage) => {
-        console.log(message)
         if (gameState.isGameFinish) {
           console.log('ゲームは終了しています。')
           return
