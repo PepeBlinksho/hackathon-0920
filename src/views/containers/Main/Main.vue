@@ -67,6 +67,8 @@ const isShowProgress = computed(() => {
   }
 })
 
+console.log(import.meta.env.MODE)
+
 watch(() => {
   return gameState.isGameFinish
 }, (isGameFinish) => {

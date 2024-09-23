@@ -26,11 +26,11 @@ async function payment(event: any) {
 
   const elements = state.stripeElements
   if (state.stripe && elements) {
+    const returnUrl = import.meta.env.MODE === 'development' ? 'http://localhost:5173/' : 'https://hackathon-2mix.web.app'
     await state.stripe.confirmSetup({
       elements,
       confirmParams: {
-        return_url: 'http://localhost:5173/',
-        // return_url: 'https://hackathon-2mix.web.app/',
+        return_url: returnUrl,
       },
     })
   }
