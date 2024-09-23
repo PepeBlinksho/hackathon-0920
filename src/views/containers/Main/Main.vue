@@ -53,13 +53,13 @@ async function goToHome() {
 const isShowProgress = computed(() => {
   if (!mounted.value) {
     return {
-      text: '初期化中',
+      text: 'now loading...',
     }
   }
 
   if (gameState.isMatching) {
     return {
-      text: 'マッチング中',
+      text: 'now matching...',
     }
   }
 
