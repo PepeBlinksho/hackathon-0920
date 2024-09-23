@@ -69,6 +69,8 @@ const isShowProgress = computed(() => {
 })
 
 onBeforeMount(async () => {
+  window.history.replaceState('', '', '/')
+
   await userModule.query(userId.value)
 
   if (!ablyClientStore.client) {
