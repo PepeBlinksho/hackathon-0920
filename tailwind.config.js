@@ -12,4 +12,7 @@ export default {
   plugins: [
     daisyui,
   ],
+  daisyui: {
+    themes: ['sunset'], // false: only light + dark | true: all themes | array: specific themes like this ["light", "dark", "cupcake"]
+  },
 }
