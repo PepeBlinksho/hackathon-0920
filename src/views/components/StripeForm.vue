@@ -31,6 +31,13 @@ async function payment(event: any) {
       confirmParams: {
         return_url: 'http://localhost:5173/',
         // return_url: 'https://hackathon-2mix.web.app/',
+        payment_method_data: {
+          billing_details: {
+            address: {
+              country: 'JP',
+            },
+          },
+        },
       },
     })
   }
@@ -39,8 +46,8 @@ async function payment(event: any) {
 onMounted(async () => {
   state.stripe = await loadStripe('pk_test_51Op74tIfAB2tP1ySnaqwHzzWnrlu8cxh6EskQR0Vkz5xIdn3JXMAlOK1LzEEDOihALjX3aHB0V8aRzE8OV4iwkZV00qLKysZ8K')
   const clientSecret = props.user.client_secret
-  if (!state.stripe) {
-    console.log('stripeの取得ができていません')
+  if (!state.stripe || !clientSecret) {
+    console.log('stripeの取得または、clientSecretの取得ができていません')
     return
   }
 
@@ -51,7 +58,15 @@ onMounted(async () => {
     },
   })
 
-  state.cardForm = state.stripeElements.create('payment')
+  state.cardForm = state.stripeElements.create('payment', {
+    fields: {
+      billingDetails: {
+        address: {
+          country: 'never',
+        },
+      },
+    },
+  })
   state.cardForm.mount('#payment-element')
 })
 </script>
