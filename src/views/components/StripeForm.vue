@@ -54,7 +54,7 @@ onMounted(async () => {
   state.stripeElements = state.stripe.elements({
     clientSecret,
     appearance: {
-      theme: 'stripe',
+      theme: 'night',
     },
   })
 
