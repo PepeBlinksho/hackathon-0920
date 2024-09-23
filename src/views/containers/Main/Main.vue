@@ -118,7 +118,7 @@ onBeforeMount(async () => {
       v-if="isShowProgress.text"
       :text="isShowProgress.text"
     />
-    <footer class="footer footer-center text-base-content p-4">
+    <footer class="fixed bottom-0 footer footer-center text-base-content p-4">
       <aside>
         <p>Copyright © {{ new Date().getFullYear() }} - All right reserved by 2-mix</p>
       </aside>
