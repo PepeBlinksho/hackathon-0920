@@ -9,6 +9,9 @@ const props = defineProps<{
   drawGame: () => Promise<void>
 }>()
 
+const x = '×'
+const o = '⚪︎'
+
 const model = defineModel<GameStateType>()
 
 const userStore = useUserStore()
@@ -17,8 +20,8 @@ const ablyClientStore = useAblyClientStore()
 const initialBoardValue = Array.from({ length: 9 }, () => null as string | null)
 
 const board = ref<Array<string | null>>(initialBoardValue)
-const myRole = ref<'X' | 'O' | null>(null)
-const currentPlayer = ref<'X' | 'O' | null>(null)
+const myRole = ref<'×' | '⚪︎' | null>(null)
+const currentPlayer = ref<'×' | '⚪︎' | null>(null)
 const winner = ref<string | null>(null)
 
 function play(index: number) {
@@ -59,8 +62,8 @@ function checkWinner() {
 }
 
 function selectFirstPlayer() {
-  const firstPlayer = Math.random() < 0.5 ? 'X' : 'O'
-  const rndMyRole = Math.random() < 0.5 ? 'X' : 'O'
+  const firstPlayer = Math.random() < 0.5 ? x : o
+  const rndMyRole = Math.random() < 0.5 ? x : o
   currentPlayer.value = firstPlayer
   myRole.value = rndMyRole
   ablyClientStore.channel?.publish('GAME_START', {
@@ -75,7 +78,7 @@ onMounted(() => {
       return
 
     currentPlayer.value = message.data.currentPlayer
-    myRole.value = message.data.hostRole === 'X' ? 'O' : 'X'
+    myRole.value = message.data.hostRole === x ? o : x
   })
 
   ablyClientStore.channel?.subscribe('MOVE', async (message) => {
@@ -85,7 +88,7 @@ onMounted(() => {
       await props.wonGame()
     }
 
-    currentPlayer.value = message.data.player === 'X' ? 'O' : 'X'
+    currentPlayer.value = message.data.player === x ? o : x
   })
 
   if (model.value?.isHost) {
@@ -98,15 +101,31 @@ onMounted(() => {
   <div class="flex flex-col gap-8 items-center">
     <div class="flex flex-col gap-1 prose">
       <h2 class="mb-0">
-        あなたは{{ myRole }}です！
+        あなたは
+        <span
+          :class="{
+            'pb-3 text-blue-500': myRole === x,
+            'text-red-600': myRole === o,
+          }"
+        >{{ myRole }}</span>
+        です！
       </h2>
-      <h3>
+      <h3 :class="{ 'text-primary': myRole === currentPlayer }">
         {{ myRole === currentPlayer ? 'あなたの' : '相手の' }}ターンです！
       </h3>
     </div>
     <div class="flex flex-col">
       <div class="board">
-        <div v-for="(cell, index) in board" :key="index" class="cell" @click="play(index)">
+        <div
+          v-for="(cell, index) in board"
+          :key="index"
+          class="cell rounded-md"
+          :class="{
+            'pb-3 text-blue-500': cell === x,
+            'text-red-600': cell === o,
+          }"
+          @click="play(index)"
+        >
           {{ cell }}
         </div>
       </div>
@@ -133,7 +152,7 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 2em;
+  font-size: 4em;
   cursor: pointer;
 }
 </style>
