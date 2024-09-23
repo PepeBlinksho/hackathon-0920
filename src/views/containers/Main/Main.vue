@@ -7,8 +7,10 @@ import { useAblyClientStore } from '../../../stores/AblyClientStore'
 import { useUserStore } from '../../../stores/UserStore'
 import InGame from '../../components/InGame.vue'
 import StripeForm from '../../components/StripeForm.vue'
+import UiGameInfoDialog from '../../components/UiGameInfoDialog.vue'
 import UiGameResult from '../../components/UiGameResult.vue'
 import UiHome from '../../components/UiHome.vue'
+import UiPointInfoDialog from '../../components/UiPointInfoDialog.vue'
 import UiProgress from '../../components/UiProgress.vue'
 import { _useGameFunc } from './_useGameFunc'
 
@@ -83,7 +85,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div class="w-full h-screen max-w-108 flex items-center justify-center m-auto">
+  <div class="w-full h-screen max-w-108 flex flex-col items-center justify-center m-auto">
     <div v-if="gameState.result">
       <UiGameResult
         :result="gameState.result"
@@ -99,15 +101,27 @@ onBeforeMount(async () => {
       />
     </div>
     <div v-else-if="!isShowProgress.text">
-      <UiHome
-        :user="userStore.$state.user"
-        :start-game="() => gameFunc.startGame(gameState)"
-      />
-      <StripeForm :user="userStore.$state.user" />
+      <div class="flex flex-col gap-3">
+        <UiHome
+          :user="userStore.$state.user"
+          :start-game="() => gameFunc.startGame(gameState)"
+        />
+        <StripeForm
+          v-if="!userStore.$state.user.payment_method_created"
+          :user="userStore.$state.user"
+        />
+      </div>
     </div>
     <UiProgress
       v-if="isShowProgress.text"
       :text="isShowProgress.text"
     />
+    <footer class="footer footer-center text-base-content p-4">
+      <aside>
+        <p>Copyright © {{ new Date().getFullYear() }} - All right reserved by 2-mix</p>
+      </aside>
+    </footer>
+    <UiPointInfoDialog />
+    <UiGameInfoDialog />
   </div>
 </template>

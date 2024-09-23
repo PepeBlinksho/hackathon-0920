@@ -57,9 +57,13 @@ onMounted(async () => {
 </script>
 
 <template>
-  <form id="payment-form">
+  <form id="payment-form" class="flex flex-col">
     <div id="payment-element" />
-    <button type="button" @click="payment($event)">
+    <button
+      class="btn btn-primary w-full mt-3"
+      type="button"
+      @click="payment($event)"
+    >
       カード情報を保存する
     </button>
   </form>
