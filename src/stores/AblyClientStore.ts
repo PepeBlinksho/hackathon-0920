@@ -19,7 +19,7 @@ export const useAblyClientStore = defineStore('ablyClient', {
   },
   actions: {
     async createAblyClient(clientId: number, mounted: Ref<boolean, boolean>) {
-      this.client = new Ably.Realtime('bChQFw.-4kZ1w:htx52h3aHW2FP8wrIh6xvWIPLeMso0z8gkXj80alg8E')
+      this.client = new Ably.Realtime('------------------------')
       const tokenParams = await this.client.auth.createTokenRequest({ clientId: clientId.toString() })
       this.client.auth.authorize(tokenParams)
       this.client.connection.once('connected', () => {
